@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Parametric Heart</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        canvas {
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="heartCanvas" width="800" height="800"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Move to the center of the screen
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        
+        // Flip the Y-axis so the heart draws right-side up
+        ctx.scale(1, -1);
+
+        const colors = ["red", "blue", "lime", "yellow", "cyan", "magenta", "orange", "pink"];
+        
+        // Animation variables
+        let i = 0;
+        const totalLines = 120;
+
+        // The animation loop function
+        function drawHeartAnimation() {
+            if (i < totalLines) {
+                const startX = 0;
+                const startY = 40;
+                
+                const angle = i * (Math.PI * 2) / totalLines;
+                
+                const x = 16 * Math.pow(Math.sin(angle), 3) * 15;
+                const y = (13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle)) * 15;
+                
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                ctx.strokeStyle = randomColor;
+                ctx.lineWidth = 1;
+
+                // Draw the main line
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                // Draw the starburst pattern
+                for (let j = 0; j < 8; j++) {
+                    const starAngle = j * (Math.PI / 4); 
+                    const dx = Math.cos(starAngle) * 6;
+                    const dy = Math.sin(starAngle) * 6;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + dx, y + dy);
+                    ctx.stroke();
+                }
+
+                // Increment the counter
+                i++;
+                
+                // This is the changed line! setTimeout adds a 50-millisecond delay before drawing the next line. 
+                // You can increase '50' to make it even slower, or decrease it to make it faster.
+                setTimeout(drawHeartAnimation, 50);
+            } else {
+                // Once the heart is finished, draw the text
+                drawText();
+            }
+        }
+
+        // Function to display the text message
+        function drawText() {
+            // Un-flip the Y-axis so the text isn't upside down!
+            ctx.scale(1, -1);
+            
+            // Set up the text styles
+            ctx.fillStyle = "white";
+            ctx.font = "bold 26px 'Segoe UI', sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            
+            // Add a slight pink glow to the text to make it stand out against the lines
+            ctx.shadowColor = "pink";
+            ctx.shadowBlur = 10;
+            ctx.fillText("I am fallen in love with a boy,", 0, -20);
+ctx.fillText("who has became my everything!!", 0, 10);
+ctx.fillText("Yes, he is none other than", 0, 40);
+ctx.fillText("Subhrajit Saha...", 0, 70);
+            
+            // Draw the text just slightly above the exact center
+            // ctx.fillText("I am fallen in love with a boy ,who has became my everything!! yes he is none other thansubhrajit saha...", 0, -20);
+        }
+
+        // Kick off the animation!
+        drawHeartAnimation();
+    </script>
+</body>
+</html>
